@@ -15,15 +15,15 @@ public class ClientHandler {
 
     public ClientHandler(Socket socket, ChatServer server, AuthService authService) {
         try {
-            this.authService = authService;
-            this.server = server;
             this.socket = socket;
+            this.server = server;
+            this.authService = authService;
             this.in = new DataInputStream(socket.getInputStream());
             this.out = new DataOutputStream(socket.getOutputStream());
             new Thread(() -> {
                 try {
                     authenticate();
-                    readMessage();
+                    readMessages();
                 } finally {
                     closeConnection();
                 }
@@ -40,19 +40,19 @@ public class ClientHandler {
             try {
                 String message = in.readUTF();
                 if (message.startsWith("/auth")) {
-                    String[] split = message.split("\\p{Blank}+");
-                    String login = split[1];
-                    String password = split[2];
+                   final String[] split =  message.split("\\p{Blank}+");
+                   final String login = split[1];
+                   final String password = split[2];
                     String nick = authService.getNickByLoginAndPassword(login, password);
                     if (nick !=null) {
                         if (server.isNickBusy(nick)) {
                             sendMessage("Пользователь уже авторизован");
                             continue;
                         }
-                        sendMessage("/authok" + nick);
+                        sendMessage("/authok " + nick);
                         this.nick = nick;
                         server.broadcast("Пользователь" + nick + "зашел в чат");
-                        server.subsсribe(this);
+                        server.subscribe(this);
                         break;
                     } else {
                         sendMessage("Неверное логин и пароль");
@@ -92,6 +92,14 @@ public class ClientHandler {
 
     public void sendMessage(String message) {
         try {
+                out.writeUTF(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public void sendPrivateMessage(String name,String message) {
+        try {
             out.writeUTF(message);
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,10 +107,15 @@ public class ClientHandler {
 
     }
 
-    private void readMessage() {
+    private void readMessages() {
         while (true) {
             try {
                 String message = in.readUTF();
+                //здесь проверка команды на личные ссобщения
+                if (message.startsWith("/w")) {
+                    server.privateMessage(message + "   (Приватное сообщение)");
+                    continue;
+                }
                 if ("/end".equals(message)) {
                     break;
                 }

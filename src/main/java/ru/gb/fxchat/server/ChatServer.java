@@ -1,5 +1,6 @@
 package ru.gb.fxchat.server;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,9 +10,7 @@ import java.util.List;
 public class ChatServer {
 
 
-    private List<ClientHandler> clients;
-
-
+     private final List<ClientHandler> clients;
 
     public ChatServer() {
         this.clients = new ArrayList<>();
@@ -33,11 +32,11 @@ public class ChatServer {
 
     public void broadcast(String message) {
         for (ClientHandler client : clients) {
-            client.sendMessage(message);
+                client.sendMessage(message);
         }
     }
 
-    public void subsсribe(ClientHandler client) {
+    public void subscribe(ClientHandler client) {
         clients.add(client);
     }
 
@@ -53,4 +52,39 @@ public class ChatServer {
     public void unsubsribe(ClientHandler client) {
         clients.remove(client);
     }
-}
+
+    // метод для приватных сообщений
+    public void privateMessage(String message) {
+        if (message.startsWith("/w")) {
+            final String[] split = message.split("\\p{Blank}+");
+            final String name = split[1];
+            int startNum = 8;
+            int endNum = message.length();
+            message = message.substring(startNum, endNum);
+            for (ClientHandler client : clients) {
+                if (name.equals(client.getNick())) {
+                    client.sendPrivateMessage(name, message);
+                }
+
+
+
+
+            }
+        }
+    }
+//        for (ClientHandler client : clients) {
+//            client.sendMessage(message);
+//            if (message.startsWith("/auth")) {
+//                final String[] split = message.split("\\p{Blank}+");
+//                final String login = split[1];
+//                final String password = split[2];
+//                String nick = authService.getNickByLoginAndPassword(login, password);
+//                if (nick != null) {
+//                    if (server.isNickBusy(nick)) {
+//                        sendMessage("Пользователь уже авторизован");
+//                        continue;
+//                    }
+//                }
+//            }
+//        }
+    }

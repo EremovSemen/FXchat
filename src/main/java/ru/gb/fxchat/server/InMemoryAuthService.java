@@ -47,6 +47,7 @@ public class InMemoryAuthService implements AuthService {
                 .findFirst()
                 .map(UserData::getNick)
                 .orElse(null);
+
     }
 
     @Override

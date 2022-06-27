@@ -23,7 +23,7 @@ public class ChatClient {
         out = new DataOutputStream(socket.getOutputStream());
         new Thread(() -> {
             try {
-                waitAuth();
+                  waitAuth();
                 readMessages();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -35,10 +35,10 @@ public class ChatClient {
 
     private void waitAuth() throws IOException {
         while (true) {
-            String message = in.readUTF();
+           final String message = in.readUTF();
             if (message.startsWith("/authok")) { // /authok nick1
-                String[] split = message.split("\\p{Blank} +");
-                String nick = split[1];
+               final String[] split = message.split("\\p{Blank}+");
+               final String nick = split[1];
                 controller.setAuth(true);
                 controller.addMessage("Успешная авторизация под ником " + nick);
                 break;

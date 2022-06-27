@@ -39,12 +39,13 @@ public class ChatController {
     }
 
     private void showNotification() {
-        Alert alert = new Alert(Alert.AlertType.ERROR,
+        final Alert alert = new Alert(Alert.AlertType.ERROR,
                 "Не могу подключиться к серверую \n" +
                         "Проверьте, что сервер запущен и доступен",
                 new ButtonType("Попробовать снова", ButtonBar.ButtonData.OK_DONE),
                 new ButtonType("Выйти", ButtonBar.ButtonData.CANCEL_CLOSE)
                 );
+
         alert.setTitle("Ошибка подключения!");
         final Optional<ButtonType> answer = alert.showAndWait();
         final Boolean isExit = answer
@@ -78,6 +79,6 @@ public class ChatController {
     }
 
     public void signinBtnClick() {
-        client.sendMessage("/auth" + loginField.getText() + " " + passField.getText());
+        client.sendMessage("/auth" + " " +loginField.getText() + " " + passField.getText());
     }
 }
