@@ -20,11 +20,9 @@ public class InMemoryAuthService implements AuthService {
         public String getNick() {
             return nick;
         }
-
         public String getLogin() {
             return login;
         }
-
         public String getPassword() {
             return password;
         }

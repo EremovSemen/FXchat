@@ -66,25 +66,8 @@ public class ChatServer {
                     client.sendPrivateMessage(name, message);
                 }
 
-
-
-
             }
         }
     }
-//        for (ClientHandler client : clients) {
-//            client.sendMessage(message);
-//            if (message.startsWith("/auth")) {
-//                final String[] split = message.split("\\p{Blank}+");
-//                final String login = split[1];
-//                final String password = split[2];
-//                String nick = authService.getNickByLoginAndPassword(login, password);
-//                if (nick != null) {
-//                    if (server.isNickBusy(nick)) {
-//                        sendMessage("Пользователь уже авторизован");
-//                        continue;
-//                    }
-//                }
-//            }
-//        }
+
     }

@@ -67,7 +67,6 @@ public class ChatController {
         messageField.clear();
         messageField.requestFocus();
 
-
     }
 
     public void addMessage(String message) {
