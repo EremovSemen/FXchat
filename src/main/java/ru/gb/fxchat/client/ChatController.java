@@ -87,9 +87,12 @@ public class ChatController {
         messageBox.setVisible(success);
     }
 
+
     public void signinBtnClick() {
         client.sendMessage(Command.AUTH, loginField.getText(), passField.getText());
+
     }
+
 
     public void showError(String errorMessage) {
         final Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage,
@@ -119,4 +122,5 @@ public class ChatController {
     public ChatClient getClient() {
         return client;
     }
+
 }

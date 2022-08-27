@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 
 public class ClientHandler {
     private static int AUTH_TIMEOUT = 120_000;
@@ -78,7 +79,7 @@ public class ClientHandler {
                         sendMessage(Command.ERROR, "Неверные логин и пароль");
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException | SQLException e) {
                 e.printStackTrace();
             }
         }

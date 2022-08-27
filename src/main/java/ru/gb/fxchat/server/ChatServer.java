@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,14 +23,14 @@ public class ChatServer {
 
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(8189);
-             AuthService authService = new InMemoryAuthService()) {
+             AuthService authService = new InSQLAuthService()) {
             while (true) {
                 System.out.println("Ожидаю подключения...");
                 final Socket socket = serverSocket.accept();
                 new ClientHandler(socket, this, authService);
                 System.out.println("Клиент подключен");
             }
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
     }
