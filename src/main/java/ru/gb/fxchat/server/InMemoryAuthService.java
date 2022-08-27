@@ -6,7 +6,8 @@ import java.util.List;
 
 public class InMemoryAuthService implements AuthService {
 
-    private static class UserData {
+
+    static class UserData {
         private String nick;
         private String login;
         private String password;
