@@ -9,9 +9,13 @@ import javafx.scene.layout.VBox;
 import ru.gb.fxchat.Command;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 
 public class ChatController {
+    String A;
     @FXML
     private ListView<String> clientList;
     @FXML
@@ -64,6 +68,8 @@ public class ChatController {
     public void clickSendButton() {
 
         final String message = messageField.getText();
+
+
         if (message.isBlank()) {
             return;
         }
@@ -72,6 +78,7 @@ public class ChatController {
             selectedNick = null;
         } else {
             client.sendMessage(Command.MESSAGE, message);
+
         }
         messageField.clear();
         messageField.requestFocus();
@@ -81,6 +88,7 @@ public class ChatController {
     public void addMessage(String message) {
         messageArea.appendText(message + "\n");
     }
+
 
     public void setAuth(boolean success) {
         authBox.setVisible(!success);
@@ -122,5 +130,7 @@ public class ChatController {
     public ChatClient getClient() {
         return client;
     }
+
+
 
 }

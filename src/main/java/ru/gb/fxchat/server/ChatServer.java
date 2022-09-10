@@ -4,8 +4,11 @@ import ru.gb.fxchat.Command;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +71,11 @@ public class ChatServer {
             from.sendMessage(Command.ERROR, "Пользователь не авторизован!");
             return;
         }
+
         clientTo.sendMessage(Command.MESSAGE, "От " + from.getNick() + ": " + message);
         from.sendMessage(Command.MESSAGE, "Участнику " + nickTo + ": " + message);
+
     }
+
+
 }

@@ -6,7 +6,10 @@ import ru.gb.fxchat.Command;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static ru.gb.fxchat.Command.*;
 
@@ -15,6 +18,7 @@ public class ChatClient {
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
+    private String NAME;
 
     private final ChatController controller;
 
@@ -47,6 +51,9 @@ public class ChatClient {
             final String[] params = command.parse(message);
             if (command == AUTHOK) { // /authok nick1
                 final String nick = params[0];
+                NAME = nick;
+//                Path file = Path.of("root", "files", (NAME + ".txt"));
+//                createDeleteFile(file);
                 controller.setAuth(true);
                 controller.addMessage("Успешная авторизация под ником " + nick);
                return true;
@@ -65,6 +72,10 @@ public class ChatClient {
                 }
                 return false;
             }
+                Path file = Path.of("root", "files", "1.txt");
+                createDeleteFile(file);
+                writeDataToFile(file, message);
+
         }
     }
 
@@ -97,11 +108,15 @@ public class ChatClient {
         while (true) {
             final String message = in.readUTF();
             final Command command = getCommand(message);
+
             if (END == command) {
                 controller.setAuth(false);
                 break;
             }
             final String[] params = command.parse(message);
+            Path file = Path.of("root", "files", (NAME + ".txt"));
+            createDeleteFile(file);
+            writeDataToFile(file,params[0]);
             if (ERROR == command) {
                 String messageError = params[0];
                 Platform.runLater(() -> controller.showError(messageError));
@@ -112,6 +127,7 @@ public class ChatClient {
             }
             if (CLIENTS == command) {
                 Platform.runLater(() -> controller.updateClientsList(params));
+
             }
         }
     }
@@ -119,6 +135,7 @@ public class ChatClient {
     private void sendMessage(String message) {
         try {
             out.writeUTF(message);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -126,5 +143,38 @@ public class ChatClient {
 
     public void sendMessage(Command command, String... params) {
         sendMessage(command.collectMessage(params));
+    }
+
+    private static void createDeleteFile(Path file) {
+        Path parent = file.getParent();
+        if (!Files.exists(parent)) {
+            System.out.println("Родительской папки не существует. Создадим");
+            try {
+                Files.createDirectories(parent);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (Files.exists(file)) {
+            try {
+                Files.delete(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                Files.createFile(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    private static void writeDataToFile(Path file, String data) {
+        try {
+            Files.writeString(file, data);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

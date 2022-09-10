@@ -27,7 +27,7 @@ public enum Command {
             return new String[0];
         }
     },
-    PRIVATE_MESSAGE("/w") { // /w nick1 long long message
+    PRIVATE_MESSAGE("/w") { // /w nick1 long  message
 
         @Override
         public String[] parse(String commandText) {

@@ -5,7 +5,10 @@ import ru.gb.fxchat.Command;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
 
 public class ClientHandler {
@@ -18,6 +21,7 @@ public class ClientHandler {
     private AuthService authService;
     private Thread timeoutThread;
 
+
     public ClientHandler(Socket socket, ChatServer server, AuthService authService) {
         try {
             this.socket = socket;
@@ -25,6 +29,9 @@ public class ClientHandler {
             this.authService = authService;
             this.in = new DataInputStream(socket.getInputStream());
             this.out = new DataOutputStream(socket.getOutputStream());
+
+
+
 
             this.timeoutThread = new Thread(() -> {
                 try {
@@ -124,6 +131,7 @@ public class ClientHandler {
     }
 
     private void readMessages() {
+
         while (true) {
             try {
                 final String message = in.readUTF();
@@ -131,19 +139,26 @@ public class ClientHandler {
                 if (command == Command.END) {
                     break;
                 }
+
                 if (command == Command.PRIVATE_MESSAGE) {
                     final String[] params = command.parse(message);
                     server.sendPrivateMessage(this, params[0], params[1]);
+
                     continue;
                 }
                 server.broadcast(Command.MESSAGE, nick + ": " + command.parse(message)[0]);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
+
     public String getNick() {
         return nick;
     }
+
+
+
 }
